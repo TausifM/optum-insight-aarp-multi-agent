@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <title>AI Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="chat-widget" class="closed">
+      <div id="chat-header">
+        <div class="header-content">
+          <img src="logo.png" alt="Bot Logo" class="header-logo">
+          <div class="header-title">
+            <h3 class="agent-name">Optum AI Messaging Assistant</h3>
+            <p class="agent-status">Online</p>
+          </div>
+        </div>
+        <button id="close-chat" class="close-btn" aria-label="Close chat">✕</button>
+      </div>
+      <div id="chat-container">
+        <div id="history-toggle" style="display: none"></div>
+        <div id="history-container" style="display: none"></div>
+      </div>
+      <div id="file-preview"></div>
+      <div id="input-container">
+        <input type="text" id="user-input" placeholder="Type your message..." />
+        <label class="file-btn" for="file-input" title="Attach files">📎</label>
+        <input type="file" id="file-input" multiple accept="image/*,application/pdf,audio/*,video/*" />
+        <button id="send-button">Send</button>
+      </div>
+    </div>
+    <button id="chat-toggle" aria-label="Open chat" class="chat-toggle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    </button>
+    <script src="script.js"></script>
+  </body>
+</html>
