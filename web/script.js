@@ -375,44 +375,38 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text && !currentFiles.length) return;
 
-  let userMsg = text || "";
-  if (currentFiles.length) {
-    const names = currentFiles.map(f => f.name).join(', ');
-    userMsg = userMsg ? `${userMsg}\n[Attached: ${names}]` : `[Attached: ${names}]`;
-  }
-
-  chatContainer.appendChild(renderUserMessage(userMsg));
+  chatContainer.appendChild(renderUserMessage(decodeHtml(text)));
   input.value = "";
   scrollToBottom();
   showTyping();
 
   try {
     const form = new FormData();
-    form.append('userId', getUserId() || generateUserId());
-    form.append('conversationId', getConversationId());
-    form.append('message', text);
-    form.append('channel', 'web');
-    form.append('locale', 'en-US');
-    currentFiles.forEach(f => form.append('attachments', f));
+    form.append("userId", getUserId() || generateUserId());
+    form.append("conversationId", getConversationId());
+    form.append("message", decodeHtml(text));
+    form.append("channel", "web");
+    form.append("locale", "en-US");
+    currentFiles.forEach(f => form.append("attachments", f));
 
-    const res = await fetch(API_URL, { method: 'POST', body: form });
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: form,
+      credentials: "include",
+    });
+
     const data = await res.json();
-    
     hideTyping();
-    chatContainer.appendChild(renderAgentMessage(data.reply || data));
-
-    if (fileInput) {
-      fileInput.value = '';
-      clearFilePreview();
-      currentFiles = [];
-    }
+    chatContainer.appendChild(renderAgentMessage({ body: decodeHtml(data.message) }));
   } catch (e) {
     hideTyping();
-    chatContainer.appendChild(renderAgentMessage({ body: 'Unable to reach the service. Please try again.' }));
+    chatContainer.appendChild(
+      renderAgentMessage({ body: "Unable to reach the service. Please try again." })
+    );
   }
+
   scrollToBottom();
 }
-
 /*********************************
  * EVENTS
  *********************************/
