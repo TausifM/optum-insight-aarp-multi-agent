@@ -125,6 +125,11 @@ function removeFileAt(index) {
   renderAllFilePreviews();
   syncInputFiles();
 }
+function decodeHtml(str) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = str;
+  return txt.value;
+}
 
 /*********************************
  * WELCOME MESSAGE
@@ -150,7 +155,7 @@ function showWelcome() {
     
     content.querySelectorAll(".quick-replies button").forEach(btn => {
         btn.onclick = () => {
-            input.value = btn.dataset.msg;
+            input.value = decodeHtml(btn.dataset.msg);
             sendMessage();
         };
     });
@@ -223,7 +228,7 @@ function renderFSMResponse({ title, message, nextMessage = [], quickReplies = []
   const card = createAgentMessageContainer(html);
   card.querySelectorAll(".quick-replies button").forEach(btn => {
     btn.onclick = () => {
-      input.value = btn.dataset.msg;
+      input.value = decodeHtml(btn.dataset.msg);
       sendMessage();
     };
   });
@@ -257,7 +262,7 @@ function renderAgentMessage(payload) {
   const card = createAgentMessageContainer(html);
   card.querySelectorAll(".quick-replies button").forEach(btn => {
     btn.onclick = () => {
-      input.value = btn.dataset.msg;
+      input.value = decodeHtml(btn.dataset.msg);
       sendMessage();
     };
   });
@@ -288,9 +293,9 @@ async function loadHistory() {
 
     history.forEach(item => {
       if (item.role === "user") {
-        historyContainer.appendChild(renderUserMessage(item.content));
+        historyContainer.appendChild(renderUserMessage(decodeHtml(item.content)));
       } else {
-        historyContainer.appendChild(renderAgentMessage({ body: item.content }));
+        historyContainer.appendChild(renderAgentMessage({ body: decodeHtml(item.content) }));
       }
     });
 
