@@ -373,7 +373,7 @@ function getConversationId() {
  *********************************/
 async function sendMessage() {
   const text = input.value.trim();
-  if (!text && !currentFiles.length) return;
+  if (!text) return;
 
   chatContainer.appendChild(renderUserMessage(decodeHtml(text)));
   input.value = "";
@@ -381,32 +381,36 @@ async function sendMessage() {
   showTyping();
 
   try {
-    const form = new FormData();
-    form.append("userId", getUserId() || generateUserId());
-    form.append("conversationId", getConversationId());
-    form.append("message", decodeHtml(text));
-    form.append("channel", "web");
-    form.append("locale", "en-US");
-    currentFiles.forEach(f => form.append("attachments", f));
+    const payload = {
+      userId: getUserId() || generateUserId(),
+      conversationId: getConversationId(),
+      message: decodeHtml(text),
+      channel: "web",
+      locale: "en-US"
+    };
 
     const res = await fetch(API_URL, {
       method: "POST",
-      body: form,
-      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload),
+      credentials: "include"
     });
 
     const data = await res.json();
     hideTyping();
-    chatContainer.appendChild(renderAgentMessage({ body: decodeHtml(data.message) }));
+    chatContainer.appendChild(renderAgentMessage(data));
   } catch (e) {
     hideTyping();
     chatContainer.appendChild(
-      renderAgentMessage({ body: "Unable to reach the service. Please try again." })
+      renderAgentMessage({ message: "Unable to reach the service. Please try again." })
     );
   }
 
   scrollToBottom();
 }
+
 /*********************************
  * EVENTS
  *********************************/
